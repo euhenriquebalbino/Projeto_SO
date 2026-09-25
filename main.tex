@@ -1,0 +1,296 @@
+% Projeto pronto para Overleaf (compilador pdfLaTeX)
+\documentclass[12pt,openright,oneside,a4paper,brazil]{abntex2}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[brazil]{babel}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amsthm}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[alf]{abntex2cite}
+\pgfplotsset{compat=1.18}
+
+\setlrmarginsandblock{3cm}{2cm}{*}
+\setulmarginsandblock{3cm}{2cm}{*}
+\checkandfixthelayout
+\OnehalfSpacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\definecolor{codegray}{gray}{0.95}
+\lstset{basicstyle=\ttfamily\small,backgroundcolor=\color{codegray},frame=single,
+  breaklines=true,captionpos=b,columns=fullflexible}
+\newtheorem{definicao}{Definição}[chapter]
+% Mostra um espaço de substituição enquanto a captura real não foi fornecida.
+\newcommand{\capturapendente}[3]{%
+\begin{figure}[htbp]\centering
+\IfFileExists{figuras/#1}{\includegraphics[width=.9\textwidth]{figuras/#1}}{%
+\fbox{\parbox[c][5cm][c]{.82\textwidth}{\centering\textit{Captura pendente: #1}\\[.5em]
+Insira uma imagem do terminal com o nome de um integrante visível no prompt.}}}
+\caption{#2}\label{#3}\end{figure}}
+
+\titulo{Projeto do Bimestre: Introdução aos Sistemas Operacionais e ao Linux}
+\autor{Henrique de Paula Balbino\\
+Pedro Lucas Oliveira Comper\\
+Luan Araújo de Oliveira}
+\local{Vila Velha -- ES}
+\data{2026}
+\instituicao{Universidade Vila Velha\\
+Campus de Boa Vista\\
+Ciência da Computação\\
+Disciplina: Sistemas Operacionais\\
+Professor: Jean-Rémi Bourguet\\
+Período: 2026/2}
+\tipotrabalho{Projeto do bimestre apresentado à disciplina de Sistemas Operacionais.}
+\preambulo{Projeto do bimestre --- Destinação Linux.}
+
+\begin{document}
+\selectlanguage{brazil}
+\pretextual
+\imprimircapa
+\imprimirfolhaderosto{}
+\begin{resumo}
+Este trabalho introduz conceitos fundamentais de sistemas operacionais a partir das relações históricas e técnicas entre UNIX, GNU e Linux. Também discute sistemas macOS e Windows, distribuições, interfaces de linha de comando e gerenciamento de pacotes. A parte final organiza as atividades requeridas do livro \citeonline{peixoto2013}; como as páginas correspondentes não foram disponibilizadas, ela preserva a estrutura de resolução e registra precisamente as informações ainda necessárias.
+\vspace{\onelineskip}
+\noindent\textbf{Palavras-chave}: sistemas operacionais; GNU/Linux; shell; terminal.
+\end{resumo}
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\textual
+
+\chapter{Introdução}\label{chap:introducao}
+Um sistema operacional media o uso de processador, memória, armazenamento e dispositivos por programas concorrentes. Mais que uma interface gráfica, ele define abstrações---processos, arquivos, usuários e permissões---que permitem compartilhar recursos com isolamento. Este texto progride da linhagem UNIX até práticas básicas de uso do Linux; a Seção~\ref{sec:comandos} reúne exemplos práticos.
+
+\chapter{UNIX}\label{chap:unix}
+UNIX surgiu nos Bell Labs no fim da década de 1960, no contexto posterior ao projeto Multics, e consolidou ideias decisivas: processos pequenos combináveis, sistema de arquivos hierárquico e interface textual. A reescrita predominante em C favoreceu a portabilidade entre arquiteturas. Sua influência permanece nas interfaces POSIX e na organização de sistemas contemporâneos; Linux busca compatibilidade com essas convenções \cite{kernelabout}.
+
+Sua filosofia costuma ser sintetizada em programas que executam bem uma tarefa e que podem ser compostos. Nessa composição, a saída textual de um programa pode se tornar a entrada de outro por meio de um \textit{pipe}. Essa abordagem reduz acoplamento e torna tarefas complexas reprodutíveis a partir de ferramentas simples. Em termos de arquitetura, programas no espaço do usuário solicitam serviços ao kernel, que administra recursos e dispositivos; o shell interpreta os comandos do usuário e inicia esses programas.
+
+\chapter{GNU}\label{chap:gnu}
+O Projeto GNU foi anunciado em 1983 com a meta de construir um sistema operacional livre compatível com UNIX \cite{gnuabout}. ``Livre'' refere-se às liberdades de usar, estudar, modificar e redistribuir o software, e não necessariamente ao preço. Compilador, bibliotecas, shell e ferramentas GNU compõem grande parte do ambiente de usuário normalmente chamado de GNU/Linux.
+
+Essas liberdades abrangem executar o programa para qualquer finalidade; estudar seu funcionamento e adaptá-lo; redistribuir cópias; e distribuir versões aperfeiçoadas. O acesso ao código-fonte é condição prática para estudar e modificar, mas a ênfase do software livre é a liberdade do usuário. Entre componentes relevantes do ecossistema estão GCC, Emacs, GDB e Coreutils. Assim, GNU não é apenas uma licença: é também um conjunto de ferramentas que viabiliza o uso cotidiano de sistemas livres.
+
+\chapter{Linux}\label{chap:linux}
+Linux é, estritamente, o núcleo: gerencia escalonamento, memória, dispositivos e chamadas de sistema. Uma instalação utilizável reúne esse núcleo com programas de espaço do usuário. O próprio kernel.org distingue o kernel de uma distribuição completa \cite{kernelabout}. A Figura~\ref{fig:timeline} relaciona marcos dessa composição.
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[x=2.25cm,y=1cm]
+\draw[->] (0,0)--(5.5,0);
+\foreach \x/\ano/\evento in {0/1969/UNIX,1.4/1983/GNU,3/1991/Linux,4.7/1993/Debian}{
+ \draw (\x,.12)--(\x,-.12);\node[above,align=center] at (\x,.15) {\ano\\\evento};}
+\end{tikzpicture}
+\caption{Linha do tempo resumida da linhagem UNIX, GNU e Linux.}\label{fig:timeline}
+\end{figure}
+\begin{definicao}[Kernel]\label{def:kernel}
+O kernel é a parte privilegiada do sistema operacional que arbitra o acesso ao hardware e oferece serviços aos programas por meio de chamadas de sistema.
+\end{definicao}
+Em particular, a execução de um processo alterna entre código em modo usuário e serviços requisitados ao kernel, conforme a Definição~\ref{def:kernel}.
+
+O kernel Linux foi iniciado por Linus Torvalds em 1991 e se beneficiou de uma comunidade distribuída de desenvolvimento. A combinação do kernel com ferramentas GNU tornou possível um ambiente operacional completo; por isso, a denominação GNU/Linux ressalta a participação dessas ferramentas, enquanto ``Linux'' é frequentemente usado de forma abreviada para todo o sistema. Essa distinção evita confundir núcleo, sistema operacional e distribuição.
+
+\chapter{macOS e Windows}
+macOS é um sistema proprietário da Apple, cuja base Darwin integra tecnologias BSD e Mach \cite{applekernel}. Windows é a família de sistemas da Microsoft organizada em componentes de modo usuário e modo kernel \cite{windowscomponents}. Não se deve confundir interface gráfica com arquitetura: ambos oferecem GUIs, mas também expõem mecanismos de processos, memória e E/S. Uma diferença relevante para o estudo é que macOS deriva de uma base UNIX, enquanto o Windows usa a arquitetura Windows NT e pode oferecer compatibilidade Linux por subsistemas como WSL.
+
+Em macOS, o ambiente Darwin disponibiliza componentes e convenções UNIX, incluindo ferramentas de linha de comando, embora a experiência usual do usuário seja gráfica. No Windows, programas de modo usuário dependem de serviços oferecidos pelo sistema, enquanto drivers e gerenciadores fundamentais operam em modo kernel. Em ambos os casos, a interface gráfica não elimina a necessidade de gerenciamento de processos, memória, arquivos e dispositivos.
+
+\chapter{Distribuições Linux}
+Uma distribuição integra kernel, instalador, repositórios, gerenciador de pacotes, configuração e aplicações. Portanto, não é sinônimo de Linux. A Tabela~\ref{tab:distros} compara famílias sem sugerir superioridade absoluta.
+\begin{table}[htbp]\centering
+\caption{Exemplos de famílias de distribuições.}\label{tab:distros}
+\begin{tabular}{lll}\toprule
+Família & Gerenciador usual & Característica geral\\\midrule
+Debian & APT & estabilidade e amplo repositório\\
+Fedora/RHEL & DNF & ecossistema RPM\\
+Arch & pacman & atualização contínua e configuração explícita\\\bottomrule
+\end{tabular}
+\end{table}
+Além do formato de pacote, as distribuições diferem pela política de atualização, pelo conjunto de programas padrão, pelo suporte comunitário ou empresarial e pelas decisões de configuração. Debian privilegia estabilidade e ampla disponibilidade de pacotes; Fedora costuma apresentar tecnologias recentes; Arch privilegia instalação enxuta e atualizações contínuas. A escolha adequada depende do objetivo, como desktop, servidor, ensino, desenvolvimento ou administração de segurança.
+
+\chapter{Terminais e shells}
+O terminal é o dispositivo ou emulador que apresenta entrada e saída textual; o shell é o interpretador que lê comandos e inicia programas. Bash, Zsh e Fish são shells. Essa separação explica por que trocar o emulador de terminal não altera necessariamente os comandos disponíveis. O shell ainda viabiliza composição com redirecionamentos e pipes, cujo valor está em ligar a saída de um programa à entrada de outro.\footnote{O pipe é representado por \texttt{|}; não cria um arquivo intermediário por si só.}
+
+Também é útil distinguir console, terminal e pseudo-terminal. Um console é uma interface diretamente associada ao sistema; um emulador gráfico cria um pseudo-terminal para receber entrada e apresentar saída. O comando \texttt{tty} informa o dispositivo associado à sessão atual. Já o \textit{prompt} sinaliza que o shell está pronto para receber um comando e é justamente o elemento que deve identificar um integrante nas capturas solicitadas pelo professor.
+
+O Bourne shell (\texttt{sh}) estabeleceu uma sintaxe influente em UNIX. O Bash, desenvolvido no âmbito do GNU, é largamente empregado em distribuições Linux; Zsh e Fish oferecem alternativas com recursos próprios. Embora os três possam iniciar comandos, scripts e configurações não são automaticamente portáveis entre eles.
+
+\chapter{Gerenciamento de pacotes}
+Gerenciadores resolvem dependências, verificam metadados e instalam versões rastreáveis por repositórios. O administrador deve atualizar índices e pacotes segundo a política da distribuição, evitando misturar repositórios incompatíveis. A quantidade de trabalho de atualização pode ser expressa, de forma abstrata, por
+\begin{equation}\label{eq:atualizacao}
+T_{atualizacao}=T_{download}+T_{verificacao}+T_{instalacao}.
+\end{equation}
+A Equação~\ref{eq:atualizacao} não é uma medição: apenas decompõe conceitualmente etapas do processo.
+
+Em sistemas Debian, \texttt{dpkg} manipula diretamente pacotes \texttt{.deb}, enquanto APT opera em nível mais alto, consulta repositórios e resolve dependências. Nas famílias Red Hat e Fedora, RPM é o formato tradicional e DNF é uma ferramenta de alto nível. Há ainda formatos voltados a múltiplas distribuições, como Snap e Flatpak; eles facilitam a distribuição de aplicações, mas não substituem necessariamente o gerenciador nativo do sistema. A Tabela~\ref{tab:distros} mostra como esse componente se relaciona às famílias de distribuições.
+
+\chapter{Comandos}\label{sec:comandos}
+Comandos devem ser usados com atenção ao diretório atual, às permissões e aos argumentos. O Listing~\ref{lst:basicos} ilustra consulta e manipulação não destrutiva de arquivos.
+\begin{lstlisting}[language=bash,caption={Exemplos básicos de navegação e inspeção.},label={lst:basicos}]
+pwd                 # exibe o diretorio atual
+ls -la              # lista inclusive entradas ocultas
+mkdir -p dados/logs # cria a hierarquia solicitada
+find dados -type f  # localiza arquivos regulares
+\end{lstlisting}
+\begin{itemize}
+  \item \texttt{pwd} reduz ambiguidades sobre o local em que comandos atuam;
+  \item \texttt{ls} inspeciona entradas, mas não substitui critérios de busca;
+  \item \texttt{find} seleciona arquivos por condições, como tipo ou nome.
+\end{itemize}
+Outros comandos recorrentes são \texttt{cp}, para copiar; \texttt{mv}, para mover ou renomear; \texttt{rm}, para remover; e \texttt{tar}, para empacotar arquivos. Caracteres-curinga também são importantes: \texttt{*} representa uma sequência de caracteres, \texttt{?} representa um único caractere e colchetes especificam alternativas. Como comandos de remoção podem afetar dados permanentemente, recomenda-se sempre confirmar o diretório atual com \texttt{pwd} e listar os alvos antes de executar uma remoção recursiva.
+O gráfico da Figura~\ref{fig:barplot} contabiliza apenas os quatro comandos do Listing~\ref{lst:basicos}; é uma visualização didática, não dado empírico externo.
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}\begin{axis}[ybar,bar width=18pt,ymin=0,ymax=2,ylabel={Ocorrências no exemplo},symbolic x coords={pwd,ls,mkdir,find},xtick=data,width=.82\textwidth,height=6cm]
+\addplot coordinates {(pwd,1) (ls,1) (mkdir,1) (find,1)};
+\end{axis}\end{tikzpicture}
+\caption{Barplot das ocorrências de comandos no Listing~\ref{lst:basicos}.}\label{fig:barplot}
+\end{figure}
+
+\chapter{Organização do Linux}\label{chap:orglinux}
+Conforme o Capítulo 3 de \citeonline{peixoto2013}, a organização do Linux é hierárquica e tem a raiz \texttt{/} como ponto de partida. As respostas a seguir usam o diretório pessoal do integrante; substitua o prompt pelas informações reais do computador antes de produzir as capturas.
+
+\section{Exercício de fixação 1 (página 40)}\label{sec:ex31}
+\textbf{Enunciado resumido.} Desenhar a árvore do sistema de arquivos até o terceiro nível, considerando \texttt{/} como primeiro nível e mostrando no máximo três diretórios no terceiro nível.\par
+\textbf{Resolução.} A estrutura inicia em \texttt{/}; no segundo nível, por exemplo, aparecem \texttt{/bin}, \texttt{/etc} e \texttt{/home}. Os diretórios do terceiro nível variam de acordo com a distribuição e devem ser anotados a partir do resultado efetivamente obtido. O comando do Listing~\ref{lst:ex31} permite observá-los sem alterar o sistema.
+\begin{lstlisting}[language=bash,caption={Inspeção da hierarquia para o Exercício 3.1.},label={lst:ex31}]
+find / -maxdepth 3 -type d 2>/dev/null | head -n 40
+\end{lstlisting}
+\capturapendente{exercicio-3-1.png}{Inspeção da árvore de diretórios para o Exercício de fixação 1 do Capítulo 3.}{fig:ex31}
+
+\section{Atividade 3.2 (página 61)}\label{sec:at32}
+\textbf{Enunciado resumido.} Criar \texttt{exemplo1} e \texttt{exemplo2} por comandos distintos, inserindo linhas pelo teclado em um deles, e tornar o arquivo vazio idêntico ao que possui conteúdo.\par
+\textbf{Resolução e raciocínio.} \texttt{touch} cria o arquivo vazio. Já \texttt{cat >} lê as linhas digitadas até \texttt{Ctrl+D}; \texttt{cp} reproduz o conteúdo no segundo arquivo. A Figura~\ref{fig:at32} deve mostrar também as linhas digitadas e o resultado de \texttt{cmp}.
+\begin{lstlisting}[language=bash,caption={Criação e comparação dos arquivos da Atividade 3.2.},label={lst:at32}]
+cd ~
+touch exemplo2
+cat > exemplo1
+# digite algumas linhas e pressione Ctrl+D
+cp exemplo1 exemplo2
+cmp exemplo1 exemplo2
+\end{lstlisting}
+\capturapendente{atividade-3-2.png}{Criação e cópia dos arquivos da Atividade 3.2.}{fig:at32}
+
+\section{Atividade 3.3 (página 61)}\label{sec:at33}
+\textbf{Enunciado resumido.} Criar \texttt{~/temp/exemplos} com um só comando e transferir os arquivos, mantendo uma cópia de \texttt{exemplo2} na origem.\par
+\textbf{Resolução e raciocínio.} A opção \texttt{-p} cria os níveis ausentes. \texttt{mv} transfere \texttt{exemplo1}; \texttt{cp} coloca uma cópia de \texttt{exemplo2} no destino e preserva seu original. O resultado deve ser conferido na Figura~\ref{fig:at33}.
+\begin{lstlisting}[language=bash,caption={Diretórios e cópia solicitados na Atividade 3.3.},label={lst:at33}]
+mkdir -p ~/temp/exemplos
+mv ~/exemplo1 ~/temp/exemplos/
+cp ~/exemplo2 ~/temp/exemplos/
+ls -l ~ ~/temp/exemplos
+\end{lstlisting}
+\capturapendente{atividade-3-3.png}{Criação de diretórios e transferência de arquivos da Atividade 3.3.}{fig:at33}
+
+\section{Atividade 3.4 (página 61)}\label{sec:at34}
+\textbf{Enunciado resumido.} Empacotar e compactar os arquivos em \texttt{exemplos.tar.gz}, movê-lo para \texttt{exemplos2} e, nesse local, descompactá-lo e desempacotá-lo com um comando.\par
+\textbf{Resolução e raciocínio.} Em \texttt{tar}, \texttt{-z} seleciona gzip, \texttt{-c} cria, \texttt{-v} exibe os nomes e \texttt{-f} define o arquivo. Na extração, \texttt{-x} substitui \texttt{-c}. A execução correspondente é a da Figura~\ref{fig:at34}.
+\begin{lstlisting}[language=bash,caption={Empacotamento e extração da Atividade 3.4.},label={lst:at34}]
+cd ~/temp/exemplos
+tar -zcvf exemplos.tar.gz exemplo1 exemplo2
+mkdir exemplos2
+mv exemplos.tar.gz exemplos2/
+cd exemplos2
+tar -zxvf exemplos.tar.gz
+\end{lstlisting}
+\capturapendente{atividade-3-4.png}{Empacotamento, compactação e extração da Atividade 3.4.}{fig:at34}
+
+\section{Atividade 3.5 (página 61)}\label{sec:at35}
+\textbf{Enunciado resumido.} Após as atividades, retornar à situação original e remover os elementos criados.\par
+\textbf{Resolução e raciocínio.} Antes de remover, \texttt{ls} confirma os alvos. \texttt{rm -r} remove a árvore criada; use-o somente com os caminhos explícitos do Listing~\ref{lst:at35}. A Figura~\ref{fig:at35} deve mostrar a confirmação final.
+\begin{lstlisting}[language=bash,caption={Limpeza dos elementos criados na Atividade 3.5.},label={lst:at35}]
+ls -ld ~/temp ~/exemplo2
+rm -r ~/temp
+rm ~/exemplo2
+ls -ld ~/temp ~/exemplo2
+\end{lstlisting}
+\capturapendente{atividade-3-5.png}{Remoção dos elementos criados na Atividade 3.5.}{fig:at35}
+
+\chapter{Desvendando o Linux}\label{chap:desvendando}
+O Capítulo 4 apresenta filtros, redirecionamentos e canalizações \cite{peixoto2013}. Os comandos abaixo devem ser executados com os arquivos indicados pelo roteiro antes da captura.
+
+\section{Exercício de fixação 1 (página 68)}\label{sec:ex41}
+\textbf{Enunciado resumido.} Explicar a utilidade de \texttt{sort}, identificar a opção que ordena por coluna e pesquisar três opções.\par
+\textbf{Resolução.} \texttt{sort} reordena linhas de entrada. A opção \texttt{-k} escolhe o campo (coluna); \texttt{-n} compara numericamente, \texttt{-r} inverte a ordem e \texttt{-k} seleciona a chave de ordenação. A página de manual na Figura~\ref{fig:ex41} documenta essas opções.
+\begin{lstlisting}[language=bash,caption={Consulta ao manual para o Exercício 4.1.},label={lst:ex41}]
+man sort
+# dentro do manual, pesquise por -k, -n e -r digitando /-k
+\end{lstlisting}
+\capturapendente{exercicio-4-1.png}{Consulta às opções do comando sort no Exercício de fixação 1 do Capítulo 4.}{fig:ex41}
+
+\section{Atividade 4.1 (página 77)}\label{sec:at41}
+\textbf{Enunciado resumido.} No arquivo \texttt{atividade} fornecido pelo roteiro, exibir com numeração as linhas sem a palavra \texttt{Unix} e salvar o resultado em \texttt{atividade\_temp}.\par
+\textbf{Resolução e raciocínio.} \texttt{grep -v} seleciona linhas que não contêm o padrão; \texttt{-n} acrescenta a numeração. \texttt{tee} mostra a saída e a grava simultaneamente. Devem aparecer as linhas 3 e 7, como evidenciado na Figura~\ref{fig:at41}.
+\begin{lstlisting}[language=bash,caption={Pesquisa e gravação da Atividade 4.1.},label={lst:at41}]
+grep -vn Unix atividade | tee atividade_temp
+\end{lstlisting}
+\capturapendente{atividade-4-1.png}{Linhas sem a palavra Unix na Atividade 4.1.}{fig:at41}
+
+\section{Atividade 4.2 (página 77)}\label{sec:at42}
+\textbf{Enunciado resumido.} Mostrar, por mais de uma forma e sem listar as linhas, quantas linhas de \texttt{atividade} contêm ao menos uma ocorrência de \texttt{Unix}.\par
+\textbf{Resolução e raciocínio.} \texttt{grep -c} conta diretamente as linhas correspondentes. A canalização alternativa seleciona as linhas e \texttt{wc -l} as conta. Ambas devem retornar 6, conforme a Figura~\ref{fig:at42}.
+\begin{lstlisting}[language=bash,caption={Duas contagens para a Atividade 4.2.},label={lst:at42}]
+grep -c Unix atividade
+grep Unix atividade | wc -l
+\end{lstlisting}
+\capturapendente{atividade-4-2.png}{Contagem de linhas contendo Unix na Atividade 4.2.}{fig:at42}
+
+\section{Atividade 4.3 (página 77)}\label{sec:at43}
+\textbf{Enunciado resumido.} Usar uma canalização para exibir apenas a terceira e a quarta linhas de \texttt{atividade}.\par
+\textbf{Resolução e raciocínio.} \texttt{head -4} limita a entrada às quatro primeiras linhas, e \texttt{tail -2} retém as duas últimas desse conjunto. Assim, a Figura~\ref{fig:at43} mostra precisamente as linhas 3 e 4.
+\begin{lstlisting}[language=bash,caption={Canalização para a Atividade 4.3.},label={lst:at43}]
+head -4 atividade | tail -2
+\end{lstlisting}
+\capturapendente{atividade-4-3.png}{Terceira e quarta linhas do arquivo atividade na Atividade 4.3.}{fig:at43}
+
+\section{Atividade 4.4 (página 77)}\label{sec:at44}
+\textbf{Enunciado resumido.} Reproduzir progressivamente, sobre o arquivo \texttt{clientes}, a ordenação numérica crescente solicitada no roteiro, usando canalização e redirecionamento, sem os comandos proibidos.\par
+\textbf{Resolução e raciocínio.} O arquivo do roteiro está em ordem decrescente. Em cada etapa, a última linha é colocada depois do prefixo já organizado; o trecho intermediário é reconstruído por \texttt{tail} e \texttt{head}. Execute cada bloco, confira \texttt{clientes} com \texttt{less clientes} e somente então passe ao próximo. A solução do Listing~\ref{lst:at44} usa apenas \texttt{head}, \texttt{tail}, \texttt{mv}, pipes e redirecionamentos; não emprega os comandos vedados. A Figura~\ref{fig:at44-1} deve registrar as etapas iniciais, e a Figura~\ref{fig:at44-2}, a ordenação concluída.
+\begin{lstlisting}[language=bash,caption={Ordenação progressiva exigida na Atividade 4.4.},label={lst:at44}]
+tail -1 clientes > temporario
+head -7 clientes >> temporario
+mv temporario clientes
+
+head -1 clientes > temporario
+tail -1 clientes >> temporario
+tail -7 clientes | head -6 >> temporario
+mv temporario clientes
+
+head -2 clientes > temporario
+tail -1 clientes >> temporario
+tail -6 clientes | head -5 >> temporario
+mv temporario clientes
+
+head -3 clientes > temporario
+tail -1 clientes >> temporario
+tail -5 clientes | head -4 >> temporario
+mv temporario clientes
+
+head -4 clientes > temporario
+tail -1 clientes >> temporario
+tail -4 clientes | head -3 >> temporario
+mv temporario clientes
+
+head -5 clientes > temporario
+tail -1 clientes >> temporario
+tail -3 clientes | head -2 >> temporario
+mv temporario clientes
+
+head -6 clientes > temporario
+tail -1 clientes >> temporario
+tail -2 clientes | head -1 >> temporario
+mv temporario clientes
+less clientes
+\end{lstlisting}
+\capturapendente{atividade-4-4-1.png}{Etapas iniciais da ordenação progressiva do arquivo clientes na Atividade 4.4.}{fig:at44-1}
+\capturapendente{atividade-4-4-2.png}{Ordenação final do arquivo clientes na Atividade 4.4.}{fig:at44-2}
+
+\chapter{Conclusão}
+UNIX oferece a linhagem conceitual, GNU fornece ferramentas livres e Linux implementa o núcleo que, integrado em distribuições, sustenta ambientes de trabalho e servidores. O domínio de shell, pacotes e comandos transforma esses conceitos em prática verificável. A finalização das atividades exige as páginas identificadas e capturas produzidas pelo grupo.
+
+\postextual
+\bibliography{referencias}
+\end{document}
