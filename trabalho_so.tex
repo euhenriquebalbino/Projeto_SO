@@ -101,6 +101,7 @@ Em macOS, o ambiente Darwin disponibiliza componentes e convenções UNIX, inclu
 
 \chapter{Distribuições Linux}
 Uma distribuição integra kernel, instalador, repositórios, gerenciador de pacotes, configuração e aplicações. Portanto, não é sinônimo de Linux. A Tabela~\ref{tab:distros} compara famílias sem sugerir superioridade absoluta.
+Além do formato de pacote, as distribuições diferem pela política de atualização, pelo conjunto de programas padrão, pelo suporte comunitário ou empresarial e pelas decisões de configuração. Debian privilegia estabilidade e ampla disponibilidade de pacotes; Fedora costuma apresentar tecnologias recentes; Arch privilegia instalação enxuta e atualizações contínuas. A escolha adequada depende do objetivo, como desktop, servidor, ensino, desenvolvimento ou administração de segurança.
 \begin{table}[htbp]\centering
 \caption{Exemplos de famílias de distribuições.}\label{tab:distros}
 \begin{tabular}{lll}\toprule
@@ -110,12 +111,10 @@ Fedora/RHEL & DNF & ecossistema RPM\\
 Arch & pacman & atualização contínua e configuração explícita\\\bottomrule
 \end{tabular}
 \end{table}
-Além do formato de pacote, as distribuições diferem pela política de atualização, pelo conjunto de programas padrão, pelo suporte comunitário ou empresarial e pelas decisões de configuração. Debian privilegia estabilidade e ampla disponibilidade de pacotes; Fedora costuma apresentar tecnologias recentes; Arch privilegia instalação enxuta e atualizações contínuas. A escolha adequada depende do objetivo, como desktop, servidor, ensino, desenvolvimento ou administração de segurança.
-
 \chapter{Terminais e shells}
 O terminal é o dispositivo ou emulador que apresenta entrada e saída textual; o shell é o interpretador que lê comandos e inicia programas. Bash, Zsh e Fish são shells. Essa separação explica por que trocar o emulador de terminal não altera necessariamente os comandos disponíveis. O shell ainda viabiliza composição com redirecionamentos e pipes, cujo valor está em ligar a saída de um programa à entrada de outro.\footnote{O pipe é representado por \texttt{|}; não cria um arquivo intermediário por si só.}
 
-Também é útil distinguir console, terminal e pseudo-terminal. Um console é uma interface diretamente associada ao sistema; um emulador gráfico cria um pseudo-terminal para receber entrada e apresentar saída. O comando \texttt{tty} informa o dispositivo associado à sessão atual. Já o \textit{prompt} sinaliza que o shell está pronto para receber um comando e é justamente o elemento que deve identificar um integrante nas capturas solicitadas pelo professor.
+Também é útil distinguir console, terminal e pseudo-terminal. Um console é uma interface diretamente associada ao sistema; um emulador gráfico cria um pseudo-terminal para receber entrada e apresentar saída. O comando \texttt{tty} informa o dispositivo associado à sessão atual. Já o \textit{prompt} sinaliza que o shell está pronto para receber um comando.
 
 O Bourne shell (\texttt{sh}) estabeleceu uma sintaxe influente em UNIX. O Bash, desenvolvido no âmbito do GNU, é largamente empregado em distribuições Linux; Zsh e Fish oferecem alternativas com recursos próprios. Embora os três possam iniciar comandos, scripts e configurações não são automaticamente portáveis entre eles.
 
@@ -151,11 +150,11 @@ O gráfico da Figura~\ref{fig:barplot} contabiliza apenas os quatro comandos do 
 \end{figure}
 
 \chapter{Organização do Linux}\label{chap:orglinux}
-Conforme o Capítulo 3 de \citeonline{peixoto2013}, a organização do Linux é hierárquica e tem a raiz \texttt{/} como ponto de partida. As respostas a seguir usam o diretório pessoal do integrante; substitua o prompt pelas informações reais do computador antes de produzir as capturas.
+Conforme o Capítulo 3 de \citeonline{peixoto2013}, a organização do Linux é hierárquica e tem a raiz \texttt{/} como ponto de partida. As respostas a seguir usam o diretório pessoal do integrante.
 
 \section{Exercício de fixação 1 (página 40)}\label{sec:ex31}
 \textbf{Enunciado resumido.} Desenhar a árvore do sistema de arquivos até o terceiro nível, considerando \texttt{/} como primeiro nível e mostrando no máximo três diretórios no terceiro nível.\par
-\textbf{Resolução.} A estrutura inicia em \texttt{/}; no segundo nível, por exemplo, aparecem \texttt{/bin}, \texttt{/etc} e \texttt{/home}. Os diretórios do terceiro nível variam de acordo com a distribuição e devem ser anotados a partir do resultado efetivamente obtido. O comando do Listing~\ref{lst:ex31} permite observá-los sem alterar o sistema.
+\textbf{Resolução.} A estrutura inicia em \texttt{/}; no segundo nível, por exemplo, aparecem \texttt{/bin}, \texttt{/etc}, \texttt{/home}, \texttt{/boot} e \texttt{/var}. Os diretórios do terceiro nível variam de acordo com a distribuição e devem ser anotados a partir do resultado efetivamente obtido. O comando do Listing~\ref{lst:ex31} permite observá-los sem alterar o sistema.
 \begin{lstlisting}[language=bash,caption={Inspeção da hierarquia para o Exercício 3.1.},label={lst:ex31}]
 find / -maxdepth 3 -type d 2>/dev/null | head -n 40
 \end{lstlisting}
@@ -289,7 +288,7 @@ less clientes
 \capturapendente{atividade-4-4-2.png}{Ordenação final do arquivo clientes na Atividade 4.4.}{fig:at44-2}
 
 \chapter{Conclusão}
-UNIX oferece a linhagem conceitual, GNU fornece ferramentas livres e Linux implementa o núcleo que, integrado em distribuições, sustenta ambientes de trabalho e servidores. O domínio de shell, pacotes e comandos transforma esses conceitos em prática verificável. A finalização das atividades exige as páginas identificadas e capturas produzidas pelo grupo.
+UNIX oferece a linhagem conceitual, GNU fornece ferramentas livres e Linux implementa o núcleo que, integrado em distribuições, sustenta ambientes de trabalho e servidores. O domínio de shell, pacotes e comandos transforma esses conceitos em prática verificável.
 
 \postextual
 \bibliography{referencias}
